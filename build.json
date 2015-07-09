@@ -1,0 +1,23 @@
+﻿{
+    azure: {
+        affinityGroup: {
+            name: "west-us",
+            location: "West US"
+        },
+        service: {
+            name: "buildservertmit"
+        },
+        storageAccount: {
+            name: "buildservertmit"
+        },
+        virtualMachine: {
+            name: "buildservertmit",
+            adminUsername: "TimMurphy",
+            imageName: "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-201505.01-en.us-127GB.vhd",
+            instanceSize: "Basic_A1"
+        }
+    },
+    psake: {        
+        version: "4.2.0.1"
+    }
+}

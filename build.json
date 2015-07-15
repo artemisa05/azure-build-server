@@ -17,6 +17,9 @@
             instanceSize: "Basic_A1"
         }
     },
+    boxstarter: {
+        packageUrl: "https://gist.githubusercontent.com/TimMurphy/eec664c1c0f2fae2bc91/raw"
+    },
     psake: {        
         version: "4.2.0.1"
     }

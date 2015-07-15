@@ -1,5 +1,6 @@
 ﻿properties {
     $config = $null
+    $windowsAdminPassword = $null
 }
 
 $script:assertedProperties = $false
@@ -11,9 +12,14 @@ TaskSetup  {
     Assert-Properties
 }
 
-Task Configure-Azure-Virtual-Machine -depends Create-Azure-Virtual-Machine {
+Task Configure-Azure-Virtual-Machine {
 
-    throw "todo"
+    if ((Find-Azure-Virtual-Machine) -eq $null)
+    {
+        Invoke-Task -taskName Create-Azure-Virtual-Machine
+    }
+
+    Install-Boxstarter-Package
 }
 
 Task Create-Azure-Virtual-Machine -depends Create-Azure-Service, Create-Azure-Storage-Account {
@@ -28,14 +34,11 @@ Task Create-Azure-Virtual-Machine -depends Create-Azure-Service, Create-Azure-St
     Write-Host "Creating Azure Virtual Machine '$($config.azure.virtualMachine.name)'..."
     Write-Host
 
-    $password = [System.Web.Security.Membership]::GeneratePassword(32, 3)
-
     New-AzureVMConfig -Name $config.azure.virtualMachine.name -InstanceSize $config.azure.virtualMachine.instanceSize -ImageName $config.azure.virtualMachine.imageName |
-        Add-AzureProvisioningConfig –Windows -AdminUsername $config.azure.virtualMachine.adminUsername  –Password "$password" |
+        Add-AzureProvisioningConfig –Windows -AdminUsername $config.azure.virtualMachine.adminUsername –Password $windowsAdminPassword |
         New-AzureVM -ServiceName $config.azure.service.name -AffinityGroup $config.azure.affinityGroup.name -WaitForBoot
 
     Write-Host
-    Write-Host "Password for Virtual Machine is: $password" -ForegroundColor Green
     Write-Host "Successfully created Azure Virtual Machine." -ForegroundColor Green
 }
 
@@ -120,6 +123,8 @@ Function Assert-Properties()
 
     Format-TaskName "Assert-Properties"
 
+    Assert-NotNullOrWhitespace $windowsAdminPassword "properties.`$windowsAdminPassword"
+
     Assert-NotNull $config "properties.`$config"
 
     Assert-NotNull $config.azure "properties.`$config.azure"
@@ -139,6 +144,9 @@ Function Assert-Properties()
     Assert-NotNullOrWhiteSpace $config.azure.virtualMachine.adminUsername "properties.`$config.azure.virtualMachine.adminUsername"
     Assert-NotNullOrWhiteSpace $config.azure.virtualMachine.imageName "properties.`$config.azure.virtualMachine.imageName"
     Assert-NotNullOrWhiteSpace $config.azure.virtualMachine.instanceSize "properties.`$config.azure.virtualMachine.instanceSize"
+
+    Assert-NotNull $config.boxstarter "properties.`$config.boxstarter"
+    Assert-NotNullOrWhiteSpace $config.boxstarter.packageUrl "properties.`$config.boxstarter.packageUrl"
 
     Assert-NotNull $config.psake "properties.`$config.psake"
     Assert-NotNullOrWhiteSpace $config.psake.version "properties.`$config.psake.version"
@@ -239,6 +247,24 @@ Function Format-TaskName($taskName)
     Write-Host
     Write-Host $taskName.Replace("-", " ").Replace("If It Cannot Be Found", "if it cannot be found") -ForegroundColor Yellow
     Write-Host "----------------------------------------------------------------------" -ForegroundColor Yellow
+}
+
+Function Get-Windows-Admin-Credentials()
+{
+    $securePassword = ConvertTo-SecureString -String $windowsAdminPassword -AsPlainText -Force
+    $credentials = New-Object System.Management.Automation.PSCredential -ArgumentList $config.azure.virtualMachine.adminUsername, $securePassword
+
+    return $credentials
+}
+
+Function Install-Boxstarter-Package()
+{
+    $credentials = Get-Windows-Admin-Credentials
+    $cloudServiceName = $config.azure.service.name
+
+    $config.azure.virtualMachine.name |
+        Enable-BoxstarterVM -provider Azure -CloudServiceName $cloudServiceName -Credential $credentials | 
+        Install-BoxstarterPackage -PackageName $config.boxstarter.packageUrl
 }
 
 Function Set-Current-Storage-Account()

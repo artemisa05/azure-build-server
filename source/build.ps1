@@ -1,6 +1,11 @@
 param(
+    # $WindowsAdminPassword cannot be a SecureString because Add-AzureProvisioningConfig in build-tasks.ps1 requires a String.
+    [parameter(Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $WindowsAdminPassword,
+
     [parameter(Mandatory=$false)]
-    [string[]] $tasks
+    [string[]] $Tasks
 )
 
 $ErrorActionPreference = "Stop"
@@ -42,7 +47,7 @@ try
     Write-Host
 
     Import-Module $psakeModule -Force
-    Invoke-psake $buildTasks -taskList $tasks -properties @{"config" = $config}
+    Invoke-psake $buildTasks -taskList $tasks -properties @{"config" = $config; "windowsAdminPassword" = $WindowsAdminPassword}
 
     $successful = $psake.build_success
 }

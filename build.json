@@ -18,7 +18,7 @@
         }
     },
     boxstarter: {
-        packageUrl: "https://gist.githubusercontent.com/TimMurphy/eec664c1c0f2fae2bc91/raw"
+        packageUrl: "https://gist.githubusercontent.com/TimMurphy/eec664c1c0f2fae2bc91/raw/boxstarter-buildservertmit.ps1"
     },
     psake: {        
         version: "4.2.0.1"

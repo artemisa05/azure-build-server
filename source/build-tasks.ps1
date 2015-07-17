@@ -20,6 +20,7 @@ Task Configure-Azure-Virtual-Machine {
     }
 
     Install-Boxstarter-Package
+    Configure-Azure-Endpoints
 }
 
 Task Create-Azure-Virtual-Machine -depends Create-Azure-Service, Create-Azure-Storage-Account {
@@ -152,6 +153,31 @@ Function Assert-Properties()
     Assert-NotNullOrWhiteSpace $config.psake.version "properties.`$config.psake.version"
 
     $script:assertedProperties = $true
+}
+
+Function Configure-Azure-Endpoints()
+{
+    Write-Host "Configuring Azure Endpoints..."
+
+    $vm = Find-Azure-Virtual-Machine
+    $endpoints = Get-AzureEndpoint -VM $vm
+
+    Configure-Azure-Endpoint -vm $vm -endpoints $endpoints -name "RemoteDesktop" -protocol TCP -publicPort 55024 -localPort 3389
+    Configure-Azure-Endpoint -vm $vm -endpoints $endpoints -name "HTTPS" -protocol TCP -publicPort 443 -localPort 443
+
+    $vm | Update-AzureVM | Out-Null
+}
+
+Function Configure-Azure-Endpoint($vm, $endpoints, $name, $protocol, $publicPort, $localPort)
+{
+    $endpoint = $endpoints | Where-Object { $_.Name -eq $name }
+
+    if ($endpoint -ne $null)
+    {
+        Remove-AzureEndpoint -VM $vm -Name $name | Out-Null
+    }
+
+    $vm | Add-AzureEndpoint -Name $name -Protocol $protocol -LocalPort $localPort -PublicPort $publicPort | Out-Null
 }
 
 Function Find-Azure-Affinity-Group()

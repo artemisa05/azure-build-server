@@ -10,6 +10,7 @@ todo: Edit & polish before merging into master branch. Contents in the develop b
 
 ## Contents
 
+- [Jenkins](jenkins)
 - build.cmd, NuGet & psake  
 - CredMan
 - Get resource group template

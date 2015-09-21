@@ -24,3 +24,8 @@ todo: Configure reverse proxy to prevent error message `It appears that your rev
 ## Plugin Manager
 
 Update all plug ins on [Plugin Manager](https://buildservertmit.cloudapp.net/pluginManager/) page.
+
+Install plugs ins:
+
+- Bitbucket
+- Powershell

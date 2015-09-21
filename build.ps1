@@ -18,7 +18,7 @@ try
 {    
     # Resolve-Path is used to set the following variables so test the files exist.
 
-    $solutionFolder = Resolve-Path $PSScriptRoot\..
+    $solutionFolder = Resolve-Path $PSScriptRoot
     $buildConfig = Resolve-Path $solutionFolder\build.json
     $buildTasks = Resolve-Path $solutionFolder\source\build-tasks.ps1
     $libraryModule = Resolve-Path $solutionFolder\source\library.psm1
@@ -58,7 +58,6 @@ catch
 finally
 {
     Write-Host
-    Pop-Location
 
     if ($successful)
     { 

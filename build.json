@@ -18,7 +18,7 @@
         }
     },
     boxstarter: {
-        packageUrl: "https://gist.githubusercontent.com/TimMurphy/eec664c1c0f2fae2bc91/raw/boxstarter-buildservertmit.ps1"
+        packageUrl: "https://github.com/TimMurphy/azure-build-server/blob/master/source/boxstarter.ps1"
     },
     psake: {        
         version: "4.2.0.1"

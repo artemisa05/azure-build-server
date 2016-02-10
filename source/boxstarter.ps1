@@ -44,7 +44,7 @@ Function Configure-Path()
 
 Function Install-Packages()
 {
-    choco update -y all
+    choco upgrade -y all
     
     choco install -y boxstarter
     choco install -y carbon

@@ -136,7 +136,7 @@ Function Install-ReverseProxyServer()
 
     Write-Host "Downloading Web.config to '$websiteName' website..."
     $webclient = New-Object System.Net.WebClient
-    $url = "https://github.com/TimMurphy/azure-build-server/blob/master/source/reverse-proxy-web.config"
+    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/source/reverse-proxy-web.config"
     $file = "$physicalPath\Web.config"
     $webclient.DownloadFile($url, $file)
 

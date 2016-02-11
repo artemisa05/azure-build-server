@@ -44,7 +44,7 @@ Function Configure-Path()
 
 Function Install-Packages()
 {
-    choco upgrade -y all
+    choco upgrade all -y
     
     choco install -y boxstarter
     choco install -y carbon
@@ -53,7 +53,17 @@ Function Install-Packages()
     choco install -y jenkins
     choco install -y microsoft-build-tools
     choco install -y nodejs
-    choco install -y webpicmd # requires dotnet3.5
+    choco install -y lessmsi
+
+    $lessmsiPath = "C:\ProgramData\chocolatey\bin"
+
+    # Ensure lessmsi is in path for webpicmd
+    if (!$env:Path.Contains($lessmsiPath))
+    {
+        $env:Path = "$lessmsiPath;$env:Path"    
+    }
+
+    choco install -y webpicmd # requires dotnet3.5, lessmsi & lessmsi is in path
 
     npm install -g rimraf
     npm install -g bower
@@ -171,5 +181,10 @@ Function Delete-Website($name)
         Remove-Website -Name $name
     }
 }
+
+Set-Location $PSScriptRoot
+Write-Host "Current location: $(Get-Location)"
+
+$ErrorActionPreference = "Stop"
 
 Main

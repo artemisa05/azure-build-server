@@ -1,6 +1,24 @@
-# Jenkins
+# Installing Jenkins
 
-Jenkins is installed via automation but I elected to not automate Jenkins, configuration & jobs, because the documentation was very lacking.
+Jenkins is installed via automation but is configuration cannot be fully automatted. The following manual instructions are valid for 1.647 and probably later.
+
+## Create Jenkins' Account
+
+Create your account to use Jenkins.
+
+- Open Remote Desktop
+- http://localhost:8080/signup
+    - Enter field and click **Sign up**
+
+Now stop others from creating Jenkins accounts.
+ 
+- Open http://localhost:8080/configureSecurity/
+- Allow users to sign up: Untick
+- Click **Save**
+
+
+     
+# OLD NOTES
 
 ## Configure Jenkins
 

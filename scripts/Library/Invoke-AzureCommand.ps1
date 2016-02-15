@@ -1,8 +1,11 @@
-﻿Function Invoke-AzureCommand(
-    [parameter(Mandatory=$true)]
-    [ValidateNotNull()]
-    [scriptblock] $command)
+﻿Function Invoke-AzureCommand
 {
+    param(
+        [parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [scriptblock] $command
+    )
+
     try
     {
         return $command.Invoke()
@@ -11,7 +14,7 @@
     {
         $exception = $_.Exception
 
-        if ($exception.GetType().Name -ne "MethodInvocationException" -or -not (IsAzureCredentialsExpiredException $exception))
+        if ($exception.GetType().Name -ne "MethodInvocationException" -or -not (IsAzureCredentialsExpiredException -Exception $exception))
         {
             throw
         }
@@ -22,10 +25,12 @@
     }
 }
 
-Function IsAzureCredentialsExpiredException(
-    [parameter(Mandatory=$true)]
-    [ValidateNotNull()]
-    [System.Management.Automation.MethodInvocationException] $exception)
+Function IsAzureCredentialsExpiredException
 {
+    param(
+        [parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [System.Management.Automation.MethodInvocationException] $Exception
+    )
     return $exception.Message.Contains("Your Azure credentials have not been set up or have expired, please run Add-AzureAccount to set up your Azure credentials.")
 }

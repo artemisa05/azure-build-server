@@ -21,6 +21,6 @@
         }
     },
     boxstarter: {
-        baseUrl: "https://raw.githubusercontent.com/TimMurphy/azure-build-server/granular-implementation/scripts/Boxstarters"
+        baseUrl: "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters"
     }
 }

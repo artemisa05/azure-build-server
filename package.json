@@ -1,0 +1,22 @@
+{
+  "name": "azure-build-server",
+  "version": "2.0.0",
+  "description": "Azure Build Server is a collection of scripts to create an Azure Virtual Machine capable of compiling, testing & deploying .NET applications.",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TimMurphy/azure-build-server.git"
+  },
+  "author": {
+    "name": "Tim Murphy",
+    "email": "tim@26tp.com",
+    "url": "https://timmurphy.it"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TimMurphy/azure-build-server/issues"
+  },
+  "homepage": "https://github.com/TimMurphy/azure-build-server/croquet-australia-logging#readme",
+  "private": true
+}

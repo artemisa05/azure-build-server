@@ -50,7 +50,7 @@ Function Install-JenkinsConfigFile()
     
     Write-Host "Downloading Jenkins' config.xml..."
     $webclient = New-Object System.Net.WebClient
-    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/granular-implementation/scripts/Boxstarters/Resources/config.xml"
+    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters/Resources/config.xml"
     $file = "$jenkinsDirectory\program\config.xml"
     $webclient.DownloadFile($url, $file)
 
@@ -94,7 +94,7 @@ Function Initialize-ReverseProxyServer()
 
     Write-Host "Downloading Web.config to '$websiteName' website..."
     $webclient = New-Object System.Net.WebClient
-    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/granular-implementation/scripts/Boxstarters/Resources/reverse-proxy-web.config"
+    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters/Resources/reverse-proxy-web.config"
     $file = "$physicalPath\Web.config"
     $webclient.DownloadFile($url, $file)
 

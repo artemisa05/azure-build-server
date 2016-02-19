@@ -8,9 +8,10 @@ Function Main()
 
     Write-Host "Creating Jenkins' directories..."
     $jenkinsDirectory = Initialize-JenkinsDirectory
-    
+    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program").Replace("\", "/")
+        
     Write-Host "Installing Jenkins..."
-    $installArguments = "jenkinsDir=""$jenkinsDirectory/program"""
+    $installArguments = "jenkinsDir=""$jenkinsDir"""
     choco install jenkins -y --install-arguments $installArguments
 
     Write-Host "Installing Jenkins' config file..."

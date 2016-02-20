@@ -18,7 +18,11 @@ $config = Read-Config
 $credentials = New-WindowsCredentials -UserName $config.azure.virtualMachine.adminUsername -ClearPassword $VirtualMachinePassword
 
 $fileName = [System.IO.Path]::GetFileName($Name)
-$packageName = "$($config.boxstarter.baseUrl)/$fileName"
+if ($Name.StartsWith("http")) {
+    $packageName = $Name
+} else {
+    $packageName = "$($config.boxstarter.baseUrl)/$fileName"
+}
 
 Write-Host "Installing boxstarter package '$packageName'..."
 $config.azure.virtualMachine.name |

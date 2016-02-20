@@ -8,11 +8,13 @@ Function Main()
 
     Write-Host "Creating Jenkins' directories..."
     $jenkinsDirectory = Initialize-JenkinsDirectory
-    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program")
+    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program").Replace("/", "\")
     $installArguments = "jenkinsDir=""$jenkinsDir"""
         
     Write-Host "Installing Jenkins '$installArguments'..."
-    choco install jenkins -y --install-arguments $installArguments
+    # 21 Feb 2016
+    # cmd /c is required other --install-arguments is ignored 
+    cmd /c choco install jenkins -y --install-arguments $installArguments
 
     Write-Host "Installing Jenkins' config file..."
     Install-JenkinsConfigFile $jenkinsDirectory
@@ -38,7 +40,7 @@ Function Initialize-JenkinsDirectory()
     New-Item -Path "$($jenkinsDirectory)\program" -ItemType Directory | Out-Null
     New-Item -Path "$($jenkinsDirectory)\workspace" -ItemType Directory | Out-Null
     
-    Return $jenkinsDirectory.Replace("\", "/") 
+    Return $jenkinsDirectory
 }
 
 Function Install-JenkinsConfigFile()

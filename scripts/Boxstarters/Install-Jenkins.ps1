@@ -8,7 +8,7 @@ Function Main()
 
     Write-Host "Creating Jenkins' directories..."
     $jenkinsDirectory = Initialize-JenkinsDirectory
-    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program").Replace("\", "/")
+    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program")
     $installArguments = "jenkinsDir=""$jenkinsDir"""
         
     Write-Host "Installing Jenkins '$installArguments'..."

@@ -6,18 +6,15 @@ Function Main()
 {
     Write-Host "Running Install-Jenkins.ps1 @ $env:ComputerName..."
 
-    Write-Host "Creating Jenkins' directories..."
-    $jenkinsDirectory = Initialize-JenkinsDirectory
-    $jenkinsDir = [System.IO.Path]::Combine($jenkinsDirectory, "program").Replace("/", "\")
-    $installArguments = "jenkinsDir=""$jenkinsDir"""
+    Write-Host "Creating Jenkins' workspaces directory..."
+    $workspacesDirectory = Initialize-WorkspacesDirectory
+    $jenkinsConfigPath = "C:\Program Files (x86)\Jenkins\config.xml"
         
-    Write-Host "Installing Jenkins '$installArguments'..."
-    # 21 Feb 2016
-    # cmd /c is required other --install-arguments is ignored 
-    cmd /c choco install jenkins -y --install-arguments $installArguments
+    Write-Host "Installing Jenkins..."
+    & choco install jenkins -y
 
     Write-Host "Installing Jenkins' config file..."
-    Install-JenkinsConfigFile $jenkinsDirectory
+    Install-JenkinsConfigFile $jenkinsConfigPath
     
     Write-Host "Initializing reverse proxy server..."
     Initialize-ReverseProxyServer
@@ -25,36 +22,35 @@ Function Main()
     Write-Host "Successfully installed Jenkins. Now complete the manual steps."
 }
 
-Function Initialize-JenkinsDirectory()
+Function Initialize-WorkspacesDirectory()
 {
     $dataDisk = Get-Volume | where FileSystemLabel -eq "DataDisk"
     $dataDiskLetter = $dataDisk.DriveLetter
     $jenkinsDirectory = "$($dataDiskLetter):\Jenkins"
+    $workspacesDirectory = "$jenkinsDirectory\Workspaces" 
 
-    If (Test-Path $jenkinsDirectory)
-    {
-        throw "Jenkins directory '$jenkinsDirectory' already exists. todo: Create restore method."
+    If (-not (Test-Path $jenkinsDirectory)) {
+        New-Item -Path $jenkinsDirectory -ItemType Directory | Out-Null
     }
 
-    New-Item -Path $jenkinsDirectory -ItemType Directory | Out-Null
-    New-Item -Path "$($jenkinsDirectory)\program" -ItemType Directory | Out-Null
-    New-Item -Path "$($jenkinsDirectory)\workspace" -ItemType Directory | Out-Null
+    If (-not (Test-Path $workspacesDirectory)) {
+        New-Item -Path $workspacesDirectory -ItemType Directory | Out-Null
+    }
     
-    Return $jenkinsDirectory
+    return $workspacesDirectory
 }
 
 Function Install-JenkinsConfigFile()
 {
     param(
         [string]
-        $jenkinsDirectory
+        $jenkinsConfigPath
     )
     
     Write-Host "Downloading Jenkins' config.xml..."
     $webclient = New-Object System.Net.WebClient
     $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters/Resources/config.xml"
-    $file = "$jenkinsDirectory\program\config.xml"
-    $webclient.DownloadFile($url, $file)
+    $webclient.DownloadFile($url, $jenkinsConfigPath)
 
     Write-Host "Restarting Jenkins..."
     Restart-Service Jenkins

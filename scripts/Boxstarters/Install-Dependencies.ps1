@@ -8,7 +8,7 @@ Write-Host "Upgrading Chocolatey packages..."
 choco upgrade all -y
 
 Write-Host "Installing Chocolatey packages..."
-choco install -y chocolatey git nodejs.install carbon dotnet3.5 lessmsi webpicmd
+choco install -y chocolatey git nodejs.install carbon dotnet3.5 lessmsi webpicmd notepad2-mod
 
 Write-Host "Installing Microsoft Application Request Routing..."
 $lessmsiPath = "C:\ProgramData\chocolatey\bin"

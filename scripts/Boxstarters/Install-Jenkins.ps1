@@ -2,19 +2,19 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "SilentlyContinue"
 $VerbosePreference = "SilentlyContinue"
 
-Function Main()
-{
+function Main() {
+    
     Write-Host "Running Install-Jenkins.ps1 @ $env:ComputerName..."
 
     Write-Host "Creating Jenkins' workspaces directory..."
-    $workspacesDirectory = Initialize-WorkspacesDirectory
+    $jenkinsDataDirectory = Initialize-JenkinsDataDirectory
     $jenkinsConfigPath = "C:\Program Files (x86)\Jenkins\config.xml"
         
     Write-Host "Installing Jenkins..."
     & choco install jenkins -y
 
     Write-Host "Installing Jenkins' config file..."
-    Install-JenkinsConfigFile $jenkinsConfigPath
+    Install-JenkinsConfigFile $jenkinsConfigPath $jenkinsDataDirectory
     
     Write-Host "Initializing reverse proxy server..."
     Initialize-ReverseProxyServer
@@ -22,42 +22,39 @@ Function Main()
     Write-Host "Successfully installed Jenkins. Now complete the manual steps."
 }
 
-Function Initialize-WorkspacesDirectory()
-{
+function Initialize-JenkinsDataDirectory() {
+    
     $dataDisk = Get-Volume | where FileSystemLabel -eq "DataDisk"
     $dataDiskLetter = $dataDisk.DriveLetter
-    $jenkinsDirectory = "$($dataDiskLetter):\Jenkins"
-    $workspacesDirectory = "$jenkinsDirectory\Workspaces" 
+    $jenkinsDataDirectory = "$($dataDiskLetter):\Jenkins"
 
-    If (-not (Test-Path $jenkinsDirectory)) {
-        New-Item -Path $jenkinsDirectory -ItemType Directory | Out-Null
+    If (-not (Test-Path $jenkinsDataDirectory)) {
+        New-Item -Path $jenkinsDataDirectory -ItemType Directory | Out-Null
     }
 
-    If (-not (Test-Path $workspacesDirectory)) {
-        New-Item -Path $workspacesDirectory -ItemType Directory | Out-Null
-    }
-    
-    return $workspacesDirectory
+    return $jenkinsDataDirectory
 }
 
-Function Install-JenkinsConfigFile()
-{
+function Install-JenkinsConfigFile() {
     param(
         [string]
-        $jenkinsConfigPath
+        $jenkinsConfigPath,
+        
+        [string]
+        $jenkinsDataDirectory
     )
-    
-    Write-Host "Downloading Jenkins' config.xml..."
-    $webclient = New-Object System.Net.WebClient
-    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters/Resources/config.xml"
-    $webclient.DownloadFile($url, $jenkinsConfigPath)
 
+    Write-Host "Updating Jenkins' config.xml..."
+    $content = Get-Content $PSScriptRoot\Resources\config.xml
+    $content = $content.Replace("{JenkinsDataDirectory}", $jenkinsDataDirectory.Replace("\", "/"))
+    Set-Content -Path $jenkinsConfigPath -Value $content 
+    
     Write-Host "Restarting Jenkins..."
     Restart-Service Jenkins
 }
 
-Function Initialize-ReverseProxyServer()
-{
+function Initialize-ReverseProxyServer() {
+    
     Write-Host "Installing web server..."
     Install-WindowsFeature -Name Web-Server | Out-Null
 
@@ -90,11 +87,10 @@ Function Initialize-ReverseProxyServer()
     Create-Directory $physicalPath
     New-Website -Id 2 -Name $websiteName -PhysicalPath $physicalPath -IPAddress "*" -Ssl -Port 443 -HostHeader "buildservertmit.cloudapp.net" | Out-Null
 
-    Write-Host "Downloading Web.config to '$websiteName' website..."
-    $webclient = New-Object System.Net.WebClient
-    $url = "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters/Resources/reverse-proxy-web.config"
-    $file = "$physicalPath\Web.config"
-    $webclient.DownloadFile($url, $file)
+    Write-Host "Installing Web.config to '$websiteName' website..."
+    $source = "$PSScriptRoot\Resources\reverse-proxy-web.config"
+    $destination = "$physicalPath\Web.config"
+    Copy-Item $source $destination -Force
 
     Remove-Module -Name Carbon -ErrorAction SilentlyContinue
     & "C:\Windows\System32\WindowsPowerShell\v1.0\Modules\Carbon\Import-Carbon.ps1"
@@ -113,8 +109,7 @@ Function Initialize-ReverseProxyServer()
     Get-Website -Name $websiteName
 }
 
-Function Create-Directory($directory)
-{
+function Create-Directory($directory) {
     If (-not (Test-Path $directory))
     {
         Write-Host "Creating '$directory' directory..."
@@ -122,8 +117,7 @@ Function Create-Directory($directory)
     }
 }
 
-Function Delete-Website($name)
-{
+function Delete-Website($name) {
     if ((Get-Website -Name $name) -ne $null)
     {
         Write-Host "Removing '$name' website..."
@@ -131,7 +125,7 @@ Function Delete-Website($name)
     }
 }
 
-Function Get-PKICertificate  {	
+function Get-PKICertificate  {	
     <#
     .SYNOPSIS
         Retrieves  certificates from a local or remote system.

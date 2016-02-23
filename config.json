@@ -19,8 +19,5 @@
             imageName: "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-R2-20160126-en.us-127GB.vhd",
             instanceSize: "Basic_A2"
         }
-    },
-    boxstarter: {
-        baseUrl: "https://raw.githubusercontent.com/TimMurphy/azure-build-server/master/scripts/Boxstarters"
     }
 }

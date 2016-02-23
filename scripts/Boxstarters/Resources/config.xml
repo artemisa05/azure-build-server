@@ -9,8 +9,8 @@
   <securityRealm class="hudson.security.SecurityRealm$None"/>
   <disableRememberMe>false</disableRememberMe>
   <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
-  <workspaceDir>E:/jenkins/${ITEM_FULL_NAME}/workspace</workspaceDir>
-  <buildsDir>E:/jenkins/${ITEM_FULL_NAME}/builds</buildsDir>
+  <workspaceDir>{JenkinsDataDirectory}/${ITEM_FULL_NAME}/workspace</workspaceDir>
+  <buildsDir>{JenkinsDataDirectory}/${ITEM_FULL_NAME}/builds</buildsDir>
   <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
   <jdks/>
   <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>

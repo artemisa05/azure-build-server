@@ -1,5 +1,4 @@
-﻿Function Set-CurrentStorageAccount
-{
+﻿Function Set-CurrentStorageAccount {
     param(
         [parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]

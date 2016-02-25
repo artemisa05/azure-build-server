@@ -18,7 +18,11 @@ function Main() {
     
     Write-Host "Initializing reverse proxy server..."
     Initialize-ReverseProxyServer
-    
+
+    Write-Host "todo: Edit Jenkins service to runas Jenkins user." -ForegroundColor Magenta
+        
+    . $PSScriptRoot\Remove-ValuesDirectory.ps1
+
     Write-Host "Successfully installed Jenkins. Now complete the manual steps."
 }
 

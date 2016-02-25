@@ -40,3 +40,5 @@ If (!(Get-Process -Name explorer -ErrorAction SilentlyContinue))
 {
     Start-Process -FilePath explorer
 }
+
+. $PSScriptRoot\Remove-ValuesDirectory.ps1

@@ -6,3 +6,5 @@ Write-Host "Running Install-Dependencies02.ps1 @ $env:ComputerName..."
 
 Write-Host "Installing Chocolatey packages..."
 & choco install -y webpicmd 
+
+. $PSScriptRoot\Remove-ValuesDirectory.ps1

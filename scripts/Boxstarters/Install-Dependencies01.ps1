@@ -8,4 +8,6 @@ Write-Host "Upgrading Chocolatey packages..."
 & choco upgrade all -y
 
 Write-Host "Installing Chocolatey packages..."
-& choco install -y chocolatey git nodejs.install carbon lessmsi notepad2-mod
+& choco install -y carbon chocolatey dotnet4.6.1-devpack git lessmsi microsoft-build-tools nodejs.install notepad2-mod poshgit
+
+. $PSScriptRoot\Remove-ValuesDirectory.ps1
